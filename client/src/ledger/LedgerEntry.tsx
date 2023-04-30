@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Receipt, Redeem, SwapHoriz } from "@mui/icons-material";
 import PaidIcon from "@mui/icons-material/Paid";
 import { CoinPurseState, DefaultCoinPurseState } from "../context/CoinPurseContext";
@@ -39,10 +39,11 @@ export const TransactionToIcon: Record<Transaction, JSX.Element> = {
 };
 
 type properties = {
-  toggleDndEnabled?: (a: number) => void;
+  index: number;
+  handleToggleDnd: (a: number) => void;
 };
 
-export const LedgerEntry = (properties: properties) => {
+export const LedgerEntry = ({index, handleToggleDnd}: properties) => {
   const [expanded, setExpanded] = useState(false);
   const [editor, setEditor] = useState(false);
   const [coin, setCoin] = useState(DefaultCoinPurseState);
@@ -57,6 +58,10 @@ export const LedgerEntry = (properties: properties) => {
       setExpanded(!expanded);
     }
   };
+
+  const toggleDnd = useCallback(() => {
+    handleToggleDnd(index);
+  }, [index, handleToggleDnd])
 
   const entryPayload = {
     expanded,
@@ -75,7 +80,7 @@ export const LedgerEntry = (properties: properties) => {
       <EntryHeader {...{tempEntry, setTempEntry, ...entryPayload}} />
       <CardContent></CardContent>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <EntryExpanded {...{tempEntry, ...entryPayload}}/>
+        <EntryExpanded {...{toggleDnd, tempEntry, setTempEntry, ...entryPayload}}/>
       </Collapse>
     </Card>
   );

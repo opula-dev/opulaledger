@@ -15,7 +15,7 @@ export interface properties {
   id: any;
   index: number;
   type: DnDItemType;
-  enabled: boolean;
+  dragEnabled: boolean;
   moveItem: (dragIndex: number, hoverIndex: number) => void;
   children?: ReactNode;
 }
@@ -100,12 +100,13 @@ export const DnDItem = (properties: properties) => {
   });
 
   const opacity = isDragging ? 0.5 : 1;
-  const cursor = properties.enabled ? "grab" : "default";
-
-  drag(drop(ref));
+  const cursor = properties.dragEnabled ? "grab" : "default";
+  
+  drag(properties.dragEnabled ? drop(ref) : null);
+  
   return (
     <Card
-      ref={properties.enabled ? ref : null}
+      ref={ref}
       style={{ ...style, cursor, opacity }}
       data-handler-id={handlerId}
     >

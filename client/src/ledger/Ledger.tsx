@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
-import { Stack, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { DnDContainer } from "../component/DnDContainer";
 import { Add } from "@mui/icons-material";
 import update from "immutability-helper";
-import { CoinPurseState } from "../context/CoinPurseContext";
 import { DnDItem, DnDItemType } from "../component/DnDItem";
 import { LedgerEntry } from "./LedgerEntry";
 
@@ -19,21 +18,29 @@ const createItem = (key: string, type: DnDItemType) => ({
   enabled: true,
 });
 
-interface properties {}
-
-const Ledger = ({}: properties) => {
+const Ledger = () => {
   const [entries, setEntries] = useState<EntryComposition[]>(
-    [0, 1, 2, 3].map((a) => createItem(`item-${a}`, "ledger"))
+    [0, 1, 2, 3, 4, 5].map((a) => createItem(`item-${a}`, "ledger"))
   );
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
-    setEntries((prevItems: EntryComposition[]) =>
-      update(prevItems, {
+    setEntries((prevEntries: EntryComposition[]) =>
+      update(prevEntries, {
         $splice: [
           [dragIndex, 1],
-          [hoverIndex, 0, prevItems[dragIndex] as EntryComposition],
+          [hoverIndex, 0, prevEntries[dragIndex] as EntryComposition],
         ],
       })
+    );
+  }, []);
+
+  const handleDnDToggle = useCallback((index: number) => {
+    setEntries((prevEntries: EntryComposition[]) => 
+    {
+      let newEntries = [...prevEntries]
+      newEntries[index].enabled = !newEntries[index].enabled;
+      return [...newEntries]
+    }
     );
   }, []);
 
@@ -45,10 +52,10 @@ const Ledger = ({}: properties) => {
           index={index}
           id={item.key}
           type={"ledger"}
-          enabled={item.enabled}
+          dragEnabled={item.enabled}
           moveItem={moveItem}
         >
-          <LedgerEntry />
+          <LedgerEntry index={index} handleToggleDnd={handleDnDToggle} />
         </DnDItem>
       );
     },
