@@ -24,6 +24,22 @@ declare module "@mui/material/SvgIcon" {
   }
 }
 
+declare module "@mui/material/IconButton" {
+  interface IconButtonPropsColorOverrides {
+    gold: true;
+    silver: true;
+    copper: true;
+  }
+}
+
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    gold: true;
+    silver: true;
+    copper: true;
+  }
+}
+
 /* Main Theme */
 const AppTheme = createTheme({
   palette: {

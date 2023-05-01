@@ -3,25 +3,26 @@ import { IconButton } from "@mui/material";
 import { DnDContainer } from "../component/DnDContainer";
 import { Add } from "@mui/icons-material";
 import update from "immutability-helper";
-import { DnDItem, DnDItemType } from "../component/DnDItem";
+import { DnDItem } from "../component/DnDItem";
 import { LedgerEntry } from "./LedgerEntry";
+import { v4 as uuid } from "uuid";
+import { DefaultCoinPurseState } from "../context/CoinPurseContext";
+import { EntryComposition } from "./LedgerTypes";
 
-interface EntryComposition {
-  key: string;
-  type: DnDItemType;
-  enabled: boolean;
-}
-
-const createItem = (key: string, type: DnDItemType) => ({
-  key: key,
-  type: type,
-  enabled: true,
+const createItem: () => EntryComposition = () => ({
+  id: uuid(),
+  dnd: { type: "ledger", enabled: true },
+  detail: {
+    coin: DefaultCoinPurseState,
+    expanded: true,
+    title: "",
+    transaction: "sale",
+  },
+  state: { isDefault: true, editor: true },
 });
 
 const Ledger = () => {
-  const [entries, setEntries] = useState<EntryComposition[]>(
-    [0, 1, 2, 3, 4, 5].map((a) => createItem(`item-${a}`, "ledger"))
-  );
+  const [entries, setEntries] = useState<EntryComposition[]>([createItem()]);
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setEntries((prevEntries: EntryComposition[]) =>
@@ -34,28 +35,49 @@ const Ledger = () => {
     );
   }, []);
 
-  const handleDnDToggle = useCallback((index: number) => {
-    setEntries((prevEntries: EntryComposition[]) => 
-    {
-      let newEntries = [...prevEntries]
-      newEntries[index].enabled = !newEntries[index].enabled;
-      return [...newEntries]
-    }
-    );
-  }, []);
+  const updateEntry = (
+    index: number,
+    updater: (a: EntryComposition) => EntryComposition | null
+  ) => {
+    setEntries((prevEntries: EntryComposition[]) => {
+      let newEntries = [...prevEntries];
+      const newEntry = updater(newEntries[index]);
+      if (newEntry === null) {
+        newEntries.splice(index, 1);
+      } else {
+        newEntries[index] = newEntry;
+      }
+      return [...newEntries];
+    });
+  };
+
+  const handleAddEntry = () => {
+    setEntries((prevEntries: EntryComposition[]) => {
+      if (prevEntries.findIndex((e) => e.state.isDefault) !== -1) {
+        return prevEntries;
+      }
+      return update(prevEntries, {
+        $push: [createItem()],
+      });
+    });
+  };
 
   const renderItem = useCallback(
     (item: EntryComposition, index: number) => {
       return (
         <DnDItem
-          key={item.key}
+          key={item.id}
           index={index}
-          id={item.key}
-          type={"ledger"}
-          dragEnabled={item.enabled}
+          id={item.id}
+          dndState={item.dnd}
           moveItem={moveItem}
         >
-          <LedgerEntry index={index} handleToggleDnd={handleDnDToggle} />
+          <LedgerEntry
+            index={index}
+            state={item.state}
+            detail={item.detail}
+            updateEntry={updateEntry}
+          />
         </DnDItem>
       );
     },
@@ -65,14 +87,15 @@ const Ledger = () => {
   return (
     <div style={{ margin: "auto", width: "80%" }}>
       <DnDContainer>
+        {entries.map((x, i) => renderItem(x, i))}
         <IconButton
           color="success"
           aria-label="new entry"
-          sx={{ padding: "1rem" }}
+          onClick={handleAddEntry}
+          sx={{ width: "fit-content", height: "fit-content", padding: "1rem" }}
         >
           <Add />
         </IconButton>
-        {entries.map((x, i) => renderItem(x, i))}
       </DnDContainer>
     </div>
   );

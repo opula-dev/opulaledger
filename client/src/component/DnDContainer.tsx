@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 
@@ -16,7 +16,7 @@ const style = {
 export const DnDContainer = ({children}: properties) => {
   return (
     <DndProvider backend={HTML5Backend}>
-      <Box style={style}>{children}</Box>
+      <Stack direction="column-reverse" style={style}>{children}</Stack>
     </DndProvider> 
   );
 };

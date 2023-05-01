@@ -6,14 +6,24 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+import { Receipt, Redeem, SwapHoriz } from "@mui/icons-material";
+import PaidIcon from "@mui/icons-material/Paid";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CoinCounter } from "../component/CoinCounter";
 import {
-  Entry,
-  EntryProperties,
+  EntryComposition,
+  EntryDetails,
+  EntryState,
   Transaction,
-  TransactionToIcon,
-} from "./LedgerEntry";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+} from "./LedgerTypes";
+
+export const TransactionToIcon: Record<Transaction, JSX.Element> = {
+  purchase: <Receipt />,
+  sale: <PaidIcon />,
+  trade: <SwapHoriz />,
+  gift: <Redeem />,
+  default: <div style={{ width: 24, height: 24, border: "solid white 1px" }} />,
+};
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -29,50 +39,55 @@ export const ExpandRotator = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-interface EntryHeaderProperties extends EntryProperties {
-  tempEntry: Entry;
-  setTempEntry: (a: Entry) => void;
+interface properties {
+  index: number;
+  state: EntryState;
+  detail: EntryDetails;
+  tempDetail: EntryDetails;
+  updateEntry: (
+    index: number,
+    updater: (a: EntryComposition) => EntryComposition | null
+  ) => void;
+  setTempDetail: (a: EntryDetails) => void;
 }
 
 export const EntryHeader = ({
-  editor,
-  setEditor,
-  expanded,
-  setExpanded,
-  handleExpanded,
-  entry,
-  setEntry,
-  tempEntry,
-  setTempEntry,
-  coin,
-  setCoin,
-}: EntryHeaderProperties) => {
+  index,
+  state,
+  detail,
+  tempDetail,
+  updateEntry,
+  setTempDetail,
+}: properties) => {
   const storeEntry = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    store: (e: Entry, v: string) => Entry
+    store: (e: EntryDetails, v: string) => EntryDetails
   ) => {
-    setTempEntry(store({ ...tempEntry }, event.target.value));
+    setTempDetail(store({ ...tempDetail }, event.target.value));
   };
 
-  const toggleEntryType = (event: React.MouseEvent) => {
-    ////////
-  }
+  const toggleExpanded = () => {
+    updateEntry(index, (e) => {
+      e.detail.expanded = !e.detail.expanded;
+      return e;
+    });
+  };
 
   return (
     <CardHeader
       avatar={
-        <IconButton sx={{ padding: 0 }} onClick={editor ? toggleEntryType : (e) => {}}>
-          {TransactionToIcon[entry.transaction as Transaction]}
+        <IconButton sx={{ padding: 0 }} onClick={(e) => {}}>
+          {TransactionToIcon[detail.transaction]}
         </IconButton>
       }
       action={
-        editor ? (
+        state.editor ? (
           <div style={{ padding: "20px" }} /> // Fill expander dimensions
         ) : (
           <ExpandRotator
-            expand={expanded}
-            onClick={handleExpanded}
-            aria-expanded={expanded}
+            expand={detail.expanded}
+            onClick={toggleExpanded}
+            aria-expanded={detail.expanded}
             aria-label="show more"
           >
             <ExpandMoreIcon />
@@ -89,20 +104,20 @@ export const EntryHeader = ({
               padding: "0rem 1rem",
             }}
           >
-            {editor ? (
-              <div style={{ height: expanded ? "52px" : "24px" }}>
+            {state.editor ? (
+              <div style={{ height: detail.expanded ? "52px" : "24px" }}>
                 <TextField
                   variant="standard"
                   id="title"
                   multiline
                   minRows={1}
                   maxRows={2}
-                  defaultValue={entry.text.title}
+                  defaultValue={detail.title}
                   sx={{ width: "100%" }}
                   onChange={(event) =>
-                    storeEntry(event, (e, v) => {
-                      e.text.title = v;
-                      return e;
+                    storeEntry(event, (entry, value) => {
+                      entry.title = value;
+                      return entry;
                     })
                   }
                 />
@@ -111,25 +126,25 @@ export const EntryHeader = ({
               <Typography
                 sx={{
                   display: "-webkit-box",
-                  WebkitLineClamp: expanded ? "2" : "1",
+                  WebkitLineClamp: detail.expanded ? "2" : "1",
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   transitionProperty: "height",
                   transitionDuration: ".5s",
-                  height: expanded ? "52px" : "24px",
+                  height: detail.expanded ? "52px" : "24px",
                   wordWrap: "break-word",
                   wordBreak: "break-all",
                 }}
               >
-                {entry.text.title}
+                {detail.title}
               </Typography>
             )}
           </div>
           <div style={{ display: "inline", margin: "auto", padding: "0 1rem" }}>
             <CoinCounter
-              textColor={entry.transaction === "purchase" ? "red" : "white"}
-              coinPurse={coin}
+              textColor={detail.transaction === "purchase" ? "red" : "white"}
+              coinPurse={detail.coin}
             />
           </div>
         </div>

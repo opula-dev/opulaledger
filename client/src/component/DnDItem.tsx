@@ -14,8 +14,7 @@ export type DnDItemType = "generic" | "ledger";
 export interface properties {
   id: any;
   index: number;
-  type: DnDItemType;
-  dragEnabled: boolean;
+  dndState: { type: DnDItemType, enabled: boolean};  
   moveItem: (dragIndex: number, hoverIndex: number) => void;
   children?: ReactNode;
 }
@@ -33,7 +32,7 @@ export const DnDItem = (properties: properties) => {
     void,
     { handlerId: Identifier | null }
   >({
-    accept: properties.type,
+    accept: properties.dndState.type,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -90,7 +89,7 @@ export const DnDItem = (properties: properties) => {
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: properties.type,
+    type: properties.dndState.type,
     item: () => {
       return { id: properties.id, index: properties.index };
     },
@@ -100,9 +99,9 @@ export const DnDItem = (properties: properties) => {
   });
 
   const opacity = isDragging ? 0.5 : 1;
-  const cursor = properties.dragEnabled ? "grab" : "default";
+  const cursor = properties.dndState.enabled ? "grab" : "default";
   
-  drag(properties.dragEnabled ? drop(ref) : null);
+  drag(properties.dndState.enabled ? drop(ref) : null);
   
   return (
     <Card
