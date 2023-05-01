@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
 import { DnDContainer } from "../component/DnDContainer";
 import { Add } from "@mui/icons-material";
@@ -9,20 +9,34 @@ import { v4 as uuid } from "uuid";
 import { DefaultCoinPurseState } from "../context/CoinPurseContext";
 import { EntryComposition } from "./LedgerTypes";
 
-const createItem: () => EntryComposition = () => ({
+const createItem = (title?: string) => ({
   id: uuid(),
   dnd: { type: "ledger", enabled: true },
   detail: {
     coin: DefaultCoinPurseState,
     expanded: true,
-    title: "",
+    title: title ?? "",
     transaction: "sale",
   },
   state: { isDefault: true, editor: true },
-});
+} as EntryComposition);
+
+const ledgerEntriesLocalStorage = "opula-ledger-entries";
+
+const getInitialEntries = () => {
+  let result: EntryComposition[]
+  try {
+    const localEntries = window.localStorage.getItem(ledgerEntriesLocalStorage) ?? JSON.stringify([createItem("Starting Total")]);
+    result = JSON.parse(localEntries) as EntryComposition[]
+  }
+  catch {
+    result = [createItem("Starting Total")]
+  }
+  return result;
+}
 
 const Ledger = () => {
-  const [entries, setEntries] = useState<EntryComposition[]>([createItem()]);
+  const [entries, setEntries] = useState<EntryComposition[]>(getInitialEntries());
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setEntries((prevEntries: EntryComposition[]) =>
@@ -83,6 +97,13 @@ const Ledger = () => {
     },
     [moveItem]
   );
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      ledgerEntriesLocalStorage,
+      JSON.stringify(entries)
+    );
+  }, [entries]);
 
   return (
     <div style={{ margin: "auto", width: "80%" }}>
