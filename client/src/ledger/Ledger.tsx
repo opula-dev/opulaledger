@@ -26,7 +26,7 @@ const ledgerEntriesLocalStorage = "opula-ledger-entries";
 const getInitialEntries = () => {
   let result: EntryComposition[]
   try {
-    const localEntries = window.localStorage.getItem(ledgerEntriesLocalStorage) ?? JSON.stringify([createItem("Starting Total")]);
+    const localEntries = window.sessionStorage.getItem(ledgerEntriesLocalStorage) ?? JSON.stringify([createItem("Starting Total")]);
     result = JSON.parse(localEntries) as EntryComposition[]
   }
   catch {
@@ -99,7 +99,7 @@ const Ledger = () => {
   );
 
   useEffect(() => {
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       ledgerEntriesLocalStorage,
       JSON.stringify(entries)
     );
