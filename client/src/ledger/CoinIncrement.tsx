@@ -4,7 +4,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { EntryDetails } from "./LedgerTypes";
 import {
-  DefaultCoinPurseState,
+  CoinPurseState,
   MergeCoinState,
 } from "../context/CoinPurseContext";
 
@@ -21,7 +21,7 @@ export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
 
     const currentCoin = { ...tempDetail.coin };
 
-    let coinChange = DefaultCoinPurseState;
+    let coinChange: CoinPurseState = {sign: "+", gold: 0, silver: 0, copper: 0};
     coinChange.sign = sign;
     if (coinType === "g") {
       coinChange.gold = amount;

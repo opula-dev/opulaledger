@@ -32,6 +32,7 @@ export const MergeCoinState: (
   const finalSign = finalTotal < 0 ? "-" : "+";
   finalTotal = finalTotal * (finalTotal < 0 ? -1 : 1);
   const finalGold = Math.floor(finalTotal / 10 ** 4);
+  finalTotal = finalTotal - (finalGold * 10 ** 4)
   const finalSilver = Math.floor(finalTotal / 100);
   const finalCopper = finalTotal % 100;
 
