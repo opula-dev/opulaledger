@@ -1,5 +1,6 @@
 import { Circle } from "@mui/icons-material";
 import { Typography } from "@mui/material";
+import { CoinPurseState } from "../context/CoinPurseContext";
 
 const inline = {
   display: "inline",
@@ -7,13 +8,12 @@ const inline = {
 };
 
 type properties = {
-  coinPurse: { gold: number; silver: number; copper: number };
-  textColor: string;
+  coinPurse: CoinPurseState;
   notEditable?: boolean;
 };
 
-export const CoinCounter = ({ coinPurse, textColor, notEditable }: properties) => {
-  const typeStyle = { color: textColor, ...inline };
+export const CoinCounter = ({ coinPurse, notEditable }: properties) => {
+  const typeStyle = { color: coinPurse.sign === "+" ? "white" : "red", ...inline };
 
   return (
     <div style={{display: "flex", width:"fit-content"}}>

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AutoStories, Storefront, TableRestaurant } from "@mui/icons-material";
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import ClientContext from "../context/ClientContext";
-import CoinPurse from "./CoinPurse";
+import { CoinPurse } from "./CoinPurse";
 
 const ApplicationBar = () => {
   const clientContext = useContext(ClientContext);

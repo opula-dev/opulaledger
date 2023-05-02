@@ -86,7 +86,12 @@ export const EntryExpanded = ({
           </IconButton>
         </div>
         <div style={{ margin: "0 auto 0 2rem" }}>
-          {state.editor ? <CoinIncrement /> : null}
+          {state.editor ? (
+            <CoinIncrement
+              tempDetail={tempDetail}
+              setTempDetail={setTempDetail}
+            />
+          ) : null}
         </div>
         {state.editor ? (
           <div

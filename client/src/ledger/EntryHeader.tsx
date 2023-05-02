@@ -143,8 +143,7 @@ export const EntryHeader = ({
           </div>
           <div style={{ display: "inline", margin: "auto", padding: "0 1rem" }}>
             <CoinCounter
-              textColor={detail.transaction === "purchase" ? "red" : "white"}
-              coinPurse={detail.coin}
+              coinPurse={state.editor ? tempDetail.coin : detail.coin }
             />
           </div>
         </div>

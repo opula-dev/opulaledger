@@ -2,9 +2,42 @@ import { Button, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { EntryDetails } from "./LedgerTypes";
+import {
+  DefaultCoinPurseState,
+  MergeCoinState,
+} from "../context/CoinPurseContext";
 
-export const CoinIncrement = () => {
-  const handleCoinChange = (increment: string) => {};
+interface properties {
+  tempDetail: EntryDetails;
+  setTempDetail: (a: EntryDetails) => void;
+}
+
+export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
+  const handleCoinChange = (increment: string) => {
+    const sign = increment[0] as "+" | "-";
+    const amount = parseInt(increment.slice(1, increment.length - 1));
+    const coinType = increment[increment.length - 1];
+
+    const currentCoin = { ...tempDetail.coin };
+
+    let coinChange = DefaultCoinPurseState;
+    coinChange.sign = sign;
+    if (coinType === "g") {
+      coinChange.gold = amount;
+    }
+    if (coinType === "s") {
+      coinChange.silver = amount;
+    }
+    if (coinType === "c") {
+      coinChange.copper = amount;
+    }
+
+    setTempDetail({
+      ...tempDetail,
+      coin: MergeCoinState(coinChange, currentCoin),
+    });
+  };
 
   const renderIncrement = (increment: string) => {
     const type = increment[increment.length - 1];
@@ -21,7 +54,7 @@ export const CoinIncrement = () => {
     return (
       <Stack direction="column">
         <Button
-          onClick={(e) => handleCoinChange(increment)}
+          onClick={(e) => handleCoinChange(`+${increment}`)}
           sx={{
             scale: "1.2",
             margin: "0 2px 1px 0",
@@ -38,7 +71,7 @@ export const CoinIncrement = () => {
           style={{
             scale: "1.2",
             position: "relative",
-            left: isDouble ? 20 : 26,
+            left: isDouble ? 20 : 25,
             bottom: 16,
             margin: "3px 0",
             height: "0",
@@ -49,7 +82,7 @@ export const CoinIncrement = () => {
           </Typography>
         </div>
         <Button
-          onClick={(e) => handleCoinChange(increment)}
+          onClick={(e) => handleCoinChange(`-${increment}`)}
           sx={{
             scale: "1.2",
             margin: "0 2px",

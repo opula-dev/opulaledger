@@ -1,12 +1,10 @@
 import { CoinCounter } from "../component/CoinCounter";
-import CoinPurseContext from "../context/CoinPurseContext";
+import {CoinPurseContext} from "../context/CoinPurseContext";
 
-const CoinPurse = () => {
+export const CoinPurse = () => {
   return (
     <CoinPurseContext.Consumer>
-      {(coinPurse) => <CoinCounter coinPurse={coinPurse} textColor="white" notEditable/>}
+      {({coin, setCoin}) => <CoinCounter coinPurse={coin} notEditable/>}
     </CoinPurseContext.Consumer>
   );
 };
-
-export default CoinPurse;

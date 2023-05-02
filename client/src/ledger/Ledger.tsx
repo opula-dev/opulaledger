@@ -9,34 +9,38 @@ import { v4 as uuid } from "uuid";
 import { DefaultCoinPurseState } from "../context/CoinPurseContext";
 import { EntryComposition } from "./LedgerTypes";
 
-const createItem = (title?: string) => ({
-  id: uuid(),
-  dnd: { type: "ledger", enabled: false },
-  detail: {
-    coin: DefaultCoinPurseState,
-    expanded: true,
-    title: title ?? "",
-    transaction: "sale",
-  },
-  state: { isDefault: true, editor: true },
-} as EntryComposition);
+const createItem = (title?: string) =>
+  ({
+    id: uuid(),
+    dnd: { type: "ledger", enabled: false },
+    detail: {
+      coin: DefaultCoinPurseState,
+      expanded: true,
+      title: title ?? "",
+      transaction: "sale",
+    },
+    state: { isDefault: true, editor: true },
+  } as EntryComposition);
 
 const ledgerEntriesLocalStorage = "opula-ledger-entries";
 
 const getInitialEntries = () => {
-  let result: EntryComposition[]
+  let result: EntryComposition[];
   try {
-    const localEntries = window.sessionStorage.getItem(ledgerEntriesLocalStorage) ?? JSON.stringify([createItem("Starting Total")]);
-    result = JSON.parse(localEntries) as EntryComposition[]
-  }
-  catch {
-    result = [createItem("Starting Total")]
+    const localEntries =
+      window.sessionStorage.getItem(ledgerEntriesLocalStorage) ??
+      JSON.stringify([createItem("Starting Total")]);
+    result = JSON.parse(localEntries) as EntryComposition[];
+  } catch {
+    result = [createItem("Starting Total")];
   }
   return result;
-}
+};
 
 const Ledger = () => {
-  const [entries, setEntries] = useState<EntryComposition[]>(getInitialEntries());
+  const [entries, setEntries] = useState<EntryComposition[]>(
+    getInitialEntries()
+  );
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setEntries((prevEntries: EntryComposition[]) =>
