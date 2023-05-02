@@ -22,16 +22,24 @@ export const CoinIncrement = () => {
       <Stack direction="column">
         <Button
           onClick={(e) => handleCoinChange(increment)}
-          sx={{ margin: "0 2px 1px 0", padding: 0, height: "2rem", borderRadius: "1rem", minWidth:"48px" }}
+          sx={{
+            scale: "1.2",
+            margin: "0 2px 1px 0",
+            padding: 0,
+            height: "2rem",
+            borderRadius: "1rem",
+            minWidth: "48px",
+          }}
           color={color}
         >
           <KeyboardArrowUpIcon />
         </Button>
         <div
           style={{
+            scale: "1.2",
             position: "relative",
-            left: isDouble ? 16 : 21,
-            bottom: 13,
+            left: isDouble ? 20 : 26,
+            bottom: 16,
             margin: "3px 0",
             height: "0",
           }}
@@ -42,7 +50,14 @@ export const CoinIncrement = () => {
         </div>
         <Button
           onClick={(e) => handleCoinChange(increment)}
-          sx={{ margin: "0 2px", padding: 0, height: "2rem", borderRadius: "1rem", minWidth:"48px"  }}
+          sx={{
+            scale: "1.2",
+            margin: "0 2px",
+            padding: 0,
+            height: "2rem",
+            borderRadius: "1rem",
+            minWidth: "48px",
+          }}
           color={color}
         >
           <ExpandMoreIcon />

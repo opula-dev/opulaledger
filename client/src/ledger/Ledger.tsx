@@ -11,7 +11,7 @@ import { EntryComposition } from "./LedgerTypes";
 
 const createItem = (title?: string) => ({
   id: uuid(),
-  dnd: { type: "ledger", enabled: true },
+  dnd: { type: "ledger", enabled: false },
   detail: {
     coin: DefaultCoinPurseState,
     expanded: true,

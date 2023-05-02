@@ -58,7 +58,7 @@ export const EntryExpanded = ({
 
   const handleDeleteClick = () => {
     updateEntry(index, (e) => null);
-  }
+  };
 
   return (
     <CardContent>
@@ -70,7 +70,7 @@ export const EntryExpanded = ({
           style={{ display: "flex", flexDirection: "row", alignItems: "end" }}
         >
           <IconButton
-            sx={{ mr: 5 }}
+            sx={{ mr: 5, scale: "1.2" }}
             color="error"
             aria-label="delete"
             onClick={state.editor ? handleCancelClick : handleDeleteClick}
@@ -78,6 +78,7 @@ export const EntryExpanded = ({
             {state.editor ? <Cancel /> : <Delete />}
           </IconButton>
           <IconButton
+            sx={{ scale: "1.2" }}
             aria-label="edit"
             onClick={state.editor ? handleSaveClick : handleEditClick}
           >
@@ -98,12 +99,14 @@ export const EntryExpanded = ({
           >
             <Button
               color="gold"
-              variant="outlined"
-              sx={{ mb: "4px", height: "2rem" }}
+              sx={{ mb: "4px", height: "2rem", borderRadius: "2rem" }}
             >
               <Circle />
             </Button>
-            <Button color="silver" variant="outlined" sx={{ height: "2rem" }}>
+            <Button
+              color="silver"
+              sx={{ height: "2rem", borderRadius: "2rem" }}
+            >
               <ViewInAr />
             </Button>
           </div>
