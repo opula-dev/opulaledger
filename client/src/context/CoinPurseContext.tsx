@@ -44,12 +44,27 @@ export const MergeCoinState: (
   };
 };
 
+export const CoinPurseStorage = "opula-ledger-coinpurse"
+
+const getCoinPurseDefault = () => {
+  let result: CoinPurseState;
+  try {
+    const localEntries =
+      window.sessionStorage.getItem(CoinPurseStorage) ??
+      JSON.stringify(DefaultCoinPurseState);
+    result = JSON.parse(localEntries) as CoinPurseState;
+  } catch {
+    result = DefaultCoinPurseState;
+  }
+  return result;
+}
+
 interface properties {
   children?: JSX.Element[] | JSX.Element;
 }
 
 export const CoinObserver = ({ children }: properties) => {
-  const [coin, setCoin] = useState<CoinPurseState>(DefaultCoinPurseState);
+  const [coin, setCoin] = useState<CoinPurseState>(getCoinPurseDefault());
 
   return (
     <CoinPurseContext.Provider value={{ coin, setCoin }}>

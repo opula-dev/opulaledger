@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Cancel,
   Circle,
@@ -9,6 +10,12 @@ import {
 import { Button, CardContent, IconButton, Stack } from "@mui/material";
 import { EntryComposition, EntryDetails, EntryState } from "./LedgerTypes";
 import { CoinIncrement } from "./CoinIncrement";
+import {
+  CoinPurseContext,
+  CoinPurseState,
+  CoinPurseStorage,
+  MergeCoinState,
+} from "../context/CoinPurseContext";
 
 interface properties {
   index: number;
@@ -30,6 +37,23 @@ export const EntryExpanded = ({
   updateEntry,
   setTempDetail,
 }: properties) => {
+  const { setCoin } = useContext(CoinPurseContext);
+
+  const handleNetCoinChange = (
+    before: CoinPurseState,
+    after: CoinPurseState
+  ) => {
+    setCoin((prevCoin) => {
+      const subtracted = MergeCoinState(
+        { ...before, sign: before.sign === "+" ? "-" : "+" },
+        { ...prevCoin }
+      );
+      const result = MergeCoinState({ ...after }, { ...subtracted });
+      window.sessionStorage.setItem(CoinPurseStorage, JSON.stringify(result));
+      return result;
+    });
+  };
+
   const handleEditClick = () => {
     updateEntry(index, (e: EntryComposition) => {
       e.dnd.enabled = !e.dnd.enabled;
@@ -39,6 +63,7 @@ export const EntryExpanded = ({
   };
 
   const handleSaveClick = () => {
+    handleNetCoinChange({ ...detail.coin }, { ...tempDetail.coin });
     updateEntry(index, (e: EntryComposition) => {
       e.detail = { ...tempDetail };
       e.dnd.enabled = !e.dnd.enabled;
@@ -57,6 +82,7 @@ export const EntryExpanded = ({
   };
 
   const handleDeleteClick = () => {
+    setCoin((prevCoin) => MergeCoinState({...detail.coin, sign: detail.coin.sign === "+" ? "-" : "+"}, {...prevCoin}))
     updateEntry(index, (e) => null);
   };
 
