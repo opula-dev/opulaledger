@@ -143,6 +143,7 @@ export const EntryHeader = ({
           </div>
           <div style={{ display: "inline", margin: "auto", padding: "0 1rem" }}>
             <CoinCounter
+              hideExtraAmounts={!state.editor}
               coinPurse={state.editor ? tempDetail.coin : detail.coin }
             />
           </div>

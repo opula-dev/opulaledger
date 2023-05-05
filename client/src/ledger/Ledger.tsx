@@ -22,13 +22,13 @@ const createItem = (title?: string) =>
     state: { isDefault: true, editor: true },
   } as EntryComposition);
 
-const ledgerEntriesLocalStorage = "opula-ledger-entries";
+const ledgerEntriesStorage = "opula-ledger-entries";
 
 const getInitialEntries = () => {
   let result: EntryComposition[];
   try {
     const localEntries =
-      window.sessionStorage.getItem(ledgerEntriesLocalStorage) ??
+      window.sessionStorage.getItem(ledgerEntriesStorage) ??
       JSON.stringify([createItem("Starting Total")]);
     result = JSON.parse(localEntries) as EntryComposition[];
   } catch {
@@ -104,7 +104,7 @@ const Ledger = () => {
 
   useEffect(() => {
     window.sessionStorage.setItem(
-      ledgerEntriesLocalStorage,
+      ledgerEntriesStorage,
       JSON.stringify(entries)
     );
   }, [entries]);
