@@ -3,45 +3,46 @@ import { Stack } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { EntryDetails } from "./LedgerTypes";
-import {
-  CoinPurseState,
-  MergeCoinState,
-} from "../context/CoinPurseContext";
+import { CoinPurseState, MergeCoinState } from "../context/CoinPurseContext";
 
 interface properties {
-  tempDetail: EntryDetails;
-  setTempDetail: (a: EntryDetails) => void;
+  detail: EntryDetails;
+  setDetail: (a: EntryDetails) => void;
 }
 
-export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
-  const handleCoinChange = (increment: string) => {
-    const sign = increment[0] as "+" | "-";
-    const amount = parseInt(increment.slice(1, increment.length - 1));
-    const coinType = increment[increment.length - 1];
+export const CoinIncrement = ({ detail, setDetail }: properties) => {
+  const handleCoinChange = (
+    increment: number,
+    sign: "+" | "-",
+    type: "g" | "s" | "c"
+  ) => {
+    const currentCoin = { ...detail.coin };
 
-    const currentCoin = { ...tempDetail.coin };
-
-    let coinChange: CoinPurseState = {sign: "+", gold: 0, silver: 0, copper: 0};
+    let coinChange: CoinPurseState = {
+      sign: "+",
+      gold: 0,
+      silver: 0,
+      copper: 0,
+    };
     coinChange.sign = sign;
-    if (coinType === "g") {
-      coinChange.gold = amount;
+    if (type === "g") {
+      coinChange.gold = increment;
     }
-    if (coinType === "s") {
-      coinChange.silver = amount;
+    if (type === "s") {
+      coinChange.silver = increment;
     }
-    if (coinType === "c") {
-      coinChange.copper = amount;
+    if (type === "c") {
+      coinChange.copper = increment;
     }
 
-    setTempDetail({
-      ...tempDetail,
+    setDetail({
+      ...detail,
       coin: MergeCoinState(coinChange, currentCoin),
     });
   };
 
-  const renderIncrement = (increment: string) => {
-    const type = increment[increment.length - 1];
-    const amount = parseInt(increment.slice(0, increment.length - 1));
+  const renderIncrement = (increment: string, type: "g" | "s" | "c") => {
+    const amount = parseInt(increment);
     const isDouble = amount > 9;
     const color =
       type === "c"
@@ -54,7 +55,7 @@ export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
     return (
       <Stack direction="column">
         <Button
-          onClick={(e) => handleCoinChange(`+${increment}`)}
+          onClick={() => handleCoinChange(amount, "+", type)}
           sx={{
             scale: "1.2",
             margin: "0 2px 1px 0",
@@ -78,11 +79,11 @@ export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
           }}
         >
           <Typography style={{ color: color === "copper" ? "#cc6633" : color }}>
-            {increment.slice(0, increment.length - 1)}
+            {increment}
           </Typography>
         </div>
         <Button
-          onClick={(e) => handleCoinChange(`-${increment}`)}
+          onClick={() => handleCoinChange(amount, "-", type)}
           sx={{
             scale: "1.2",
             margin: "0 2px",
@@ -100,15 +101,15 @@ export const CoinIncrement = ({ tempDetail, setTempDetail }: properties) => {
   };
 
   return (
-    <Stack direction="row">
-      {renderIncrement("1c")}
-      {renderIncrement("5c")}
-      {renderIncrement("10c")}
-      {renderIncrement("25c")}
-      {renderIncrement("1s")}
-      {renderIncrement("5s")}
-      {renderIncrement("10s")}
-      {renderIncrement("1g")}
-    </Stack>
+    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+      {renderIncrement("1", "c")}
+      {renderIncrement("5", "c")}
+      {renderIncrement("10", "c")}
+      {renderIncrement("25", "c")}
+      {renderIncrement("1", "s")}
+      {renderIncrement("5", "s")}
+      {renderIncrement("10", "s")}
+      {renderIncrement("1", "g")}
+    </div>
   );
 };
