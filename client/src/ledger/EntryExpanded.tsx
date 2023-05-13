@@ -101,6 +101,7 @@ export const EntryExpanded = ({
           display: "flex",
           flexDirection: "row-reverse",
           alignItems: "end",
+          flexWrap: "wrap",
         }}
       >
         <div
@@ -143,6 +144,7 @@ export const EntryExpanded = ({
                 <Button
                   color="gold"
                   variant={!viewItems ? "outlined" : "text"}
+                  onClick={() => setViewItems(false)}
                   sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
                 >
                   <Circle />
@@ -150,13 +152,14 @@ export const EntryExpanded = ({
                 <Button
                   color="silver"
                   variant={viewItems ? "outlined" : "text"}
+                  onClick={() => setViewItems(true)}
                   sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
                 >
                   <ViewInAr />
                 </Button>
               </div>
               {viewItems ? (
-                <ItemTracker />
+                <ItemTracker  detail={tempDetail} setDetail={setTempDetail}/>
               ) : (
                 <CoinIncrement detail={tempDetail} setDetail={setTempDetail} />
               )}

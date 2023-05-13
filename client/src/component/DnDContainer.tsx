@@ -7,16 +7,10 @@ type properties = {
   children?: ReactNode;
 };
 
-const style = {
-  padding: ".5rem .5rem .1rem",
-  background: "#2f2f2f",
-  borderRadius: ".7rem",
-};
-
 export const DnDContainer = ({children}: properties) => {
   return (
     <DndProvider backend={HTML5Backend}>
-      <Stack direction="column-reverse" style={style}>{children}</Stack>
+      {children}
     </DndProvider> 
   );
 };

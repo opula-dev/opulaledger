@@ -28,6 +28,16 @@ const ApplicationBar = () => {
     window.dispatchEvent(navEvent);
   };
 
+  const tabSx = {
+    width: "15%",
+    color: "inherit",
+    display: { md: "flex" },
+  };
+
+  const tabLabelSx = {
+    display: { xs: "none", md: "flex" }
+  }
+
   return (
     <AppBar
       position="sticky"
@@ -55,16 +65,12 @@ const ApplicationBar = () => {
           variant="text"
           size="large"
           startIcon=<AutoStories />
-          sx={{
-            width: "15%",
-            color: "inherit",
-            display: { md: "flex" },
-          }}
+          sx={tabSx}
           onClick={(e) => {
             changePage(e, "/");
           }}
         >
-          <Typography sx={{ display: { xs: "none", md: "flex" } }}>
+          <Typography sx={tabLabelSx}>
             {clientContext.player === undefined
               ? "Ledger"
               : clientContext.player}
@@ -75,16 +81,12 @@ const ApplicationBar = () => {
           variant="text"
           size="large"
           startIcon=<TableRestaurant />
-          sx={{
-            width: "15%",
-            color: "inherit",
-            display: { md: "flex" },
-          }}
+          sx={tabSx}
           onClick={(e) => {
             changePage(e, "/craft");
           }}
         >
-          <Typography sx={{ display: { xs: "none", md: "flex" } }}>
+          <Typography sx={tabLabelSx}>
             Craft
           </Typography>
         </Button>
@@ -93,16 +95,12 @@ const ApplicationBar = () => {
           variant="text"
           size="large"
           startIcon=<Storefront />
-          sx={{
-            width: "15%",
-            color: "inherit",
-            display: { md: "flex" },
-          }}
+          sx={tabSx}
           onClick={(e) => {
             changePage(e, "/business");
           }}
         >
-          <Typography sx={{ display: { xs: "none", md: "flex" } }}>
+          <Typography sx={tabLabelSx}>
             Business
           </Typography>
         </Button>

@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
-import { IconButton } from "@mui/material";
+import { useCallback, useEffect, useState, useContext } from "react";
+import { IconButton, Stack } from "@mui/material";
 import { DnDContainer } from "../component/DnDContainer";
 import { Add } from "@mui/icons-material";
+import ContentPasteGoIcon from "@mui/icons-material/ContentPasteGo";
 import update from "immutability-helper";
 import { DnDItem } from "../component/DnDItem";
 import { LedgerEntry } from "./LedgerEntry";
 import { v4 as uuid } from "uuid";
 import { DefaultCoinPurseState } from "../context/CoinPurseContext";
 import { EntryComposition } from "./LedgerTypes";
+import { FormatEntries, menuOptionToFormat } from "./FormatEntries";
+import { AppMenuContext } from "../context/AppMenuContext";
 
 const createItem = (title?: string) =>
   ({
@@ -41,6 +44,7 @@ const Ledger = () => {
   const [entries, setEntries] = useState<EntryComposition[]>(
     getInitialEntries()
   );
+  const { menuState } = useContext(AppMenuContext);
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setEntries((prevEntries: EntryComposition[]) =>
@@ -110,17 +114,57 @@ const Ledger = () => {
   }, [entries]);
 
   return (
-    <div style={{ margin: "auto", width: "80%" }}>
-      <DnDContainer>
-        {entries.map((x, i) => renderItem(x, i))}
-        <IconButton
-          color="success"
-          aria-label="new entry"
-          onClick={handleAddEntry}
-          sx={{ width: "fit-content", height: "fit-content", padding: "1rem" }}
+    <div
+      style={{
+        margin: "auto",
+        width: "80%",
+        padding: ".5rem .5rem .1rem",
+        background: "#2f2f2f",
+        borderRadius: ".7rem",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div
+          style={{ display: "flex", flexDirection: "row", marginRight: "auto" }}
         >
-          <Add />
-        </IconButton>
+          <IconButton
+            color="success"
+            aria-label="new entry"
+            onClick={handleAddEntry}
+            sx={{
+              width: "fit-content",
+              height: "fit-content",
+              padding: "1rem",
+              scale: "1.25",
+            }}
+          >
+            <Add />
+          </IconButton>
+        </div>
+        <div>
+          <IconButton
+            color="primary"
+            aria-label="add entries to clipboard"
+            onClick={() =>
+              navigator.clipboard.writeText(
+                FormatEntries(entries, menuOptionToFormat(menuState))
+              )
+            }
+            sx={{
+              width: "fit-content",
+              height: "fit-content",
+              padding: "1rem",
+              scale: "1.25",
+            }}
+          >
+            <ContentPasteGoIcon />
+          </IconButton>
+        </div>
+      </div>
+      <DnDContainer>
+        <Stack direction="column-reverse">
+          {entries.map((x, i) => renderItem(x, i))}
+        </Stack>
       </DnDContainer>
     </div>
   );
