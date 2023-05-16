@@ -48,6 +48,7 @@ interface properties {
     index: number,
     updater: (a: EntryComposition) => EntryComposition | null
   ) => void;
+  handleSave: () => void;
   setTempDetail: (a: EntryDetails) => void;
 }
 
@@ -57,6 +58,7 @@ export const EntryHeader = ({
   detail,
   tempDetail,
   updateEntry,
+  handleSave,
   setTempDetail,
 }: properties) => {
   const storeEntry = (
@@ -66,11 +68,21 @@ export const EntryHeader = ({
     setTempDetail(store({ ...tempDetail }, event.target.value));
   };
 
-  const toggleExpanded = () => {
-    updateEntry(index, (e) => {
-      e.detail.expanded = !e.detail.expanded;
+  const handleEditClick = () => {
+    updateEntry(index, (e: EntryComposition) => {
+      e.dnd.enabled = false;
+      e.state.editor = true;
+      e.state.expanded = true;
       return e;
     });
+  };
+
+  const toggleExpanded = () => {
+    if (state.expanded) {
+      handleSave();
+    } else {
+      handleEditClick();
+    }
   };
 
   return (
@@ -81,18 +93,16 @@ export const EntryHeader = ({
         </IconButton>
       }
       action={
-        state.editor ? (
-          <div style={{ padding: "20px" }} /> // Fill expander dimensions
-        ) : (
-          <ExpandRotator
-            expand={detail.expanded}
-            onClick={toggleExpanded}
-            aria-expanded={detail.expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandRotator>
-        )
+        <ExpandRotator
+          expand={state.expanded}
+          onClick={toggleExpanded}
+          color="silver"
+          sx={{ scale: "1.2" }}
+          aria-expanded={state.expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </ExpandRotator>
       }
       title={
         <div style={{ display: "flex" }}>
@@ -105,7 +115,7 @@ export const EntryHeader = ({
             }}
           >
             {state.editor ? (
-              <div style={{ height: detail.expanded ? "52px" : "24px" }}>
+              <div style={{ minHeight: "24px", display: "flex" }}>
                 <TextField
                   variant="standard"
                   id="title"
@@ -113,7 +123,7 @@ export const EntryHeader = ({
                   minRows={1}
                   maxRows={2}
                   defaultValue={detail.title}
-                  sx={{ width: "100%" }}
+                  sx={{ width: "100%", flexGrow: 1 }}
                   onChange={(event) =>
                     storeEntry(event, (entry, value) => {
                       entry.title = value;
@@ -126,13 +136,13 @@ export const EntryHeader = ({
               <Typography
                 sx={{
                   display: "-webkit-box",
-                  WebkitLineClamp: detail.expanded ? "2" : "1",
+                  WebkitLineClamp: state.expanded ? "2" : "1",
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   transitionProperty: "height",
                   transitionDuration: ".5s",
-                  height: detail.expanded ? "52px" : "24px",
+                  height: state.expanded ? "52px" : "24px",
                   wordWrap: "break-word",
                   wordBreak: "break-all",
                 }}
@@ -141,10 +151,10 @@ export const EntryHeader = ({
               </Typography>
             )}
           </div>
-          <div style={{ display: "inline", margin: "auto"}}>
+          <div style={{ display: "inline", margin: "auto" }}>
             <CoinCounter
               hideExtraAmounts={!state.editor}
-              coinPurse={state.editor ? tempDetail.coin : detail.coin }
+              coinPurse={state.editor ? tempDetail.coin : detail.coin}
             />
           </div>
         </div>

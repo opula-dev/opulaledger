@@ -1,21 +1,9 @@
 import { useContext, useState } from "react";
-import {
-  Cancel,
-  Circle,
-  Delete,
-  Edit,
-  Save,
-  ViewInAr,
-} from "@mui/icons-material";
+import { Cancel, Circle, Delete, Save, ViewInAr } from "@mui/icons-material";
 import { Button, CardContent, IconButton } from "@mui/material";
 import { EntryComposition, EntryDetails, EntryState } from "./LedgerTypes";
 import { CoinIncrement } from "./CoinIncrement";
-import {
-  CoinPurseContext,
-  CoinPurseState,
-  CoinPurseStorage,
-  MergeCoinState,
-} from "../context/CoinPurseContext";
+import { CoinPurseContext, MergeCoinState } from "../context/CoinPurseContext";
 import { ItemTracker } from "./ItemTracker";
 
 interface properties {
@@ -27,6 +15,7 @@ interface properties {
     index: number,
     updater: (a: EntryComposition) => EntryComposition | null
   ) => void;
+  handleSave: () => void;
   setTempDetail: (a: EntryDetails) => void;
 }
 
@@ -36,49 +25,18 @@ export const EntryExpanded = ({
   detail,
   tempDetail,
   updateEntry,
+  handleSave,
   setTempDetail,
 }: properties) => {
   const [viewItems, setViewItems] = useState(false);
   const { setCoin } = useContext(CoinPurseContext);
 
-  const handleNetCoinChange = (
-    before: CoinPurseState,
-    after: CoinPurseState
-  ) => {
-    setCoin((prevCoin) => {
-      const subtracted = MergeCoinState(
-        { ...before, sign: before.sign === "+" ? "-" : "+" },
-        { ...prevCoin }
-      );
-      const result = MergeCoinState({ ...after }, { ...subtracted });
-      window.sessionStorage.setItem(CoinPurseStorage, JSON.stringify(result));
-      return result;
-    });
-  };
-
-  const handleEditClick = () => {
-    updateEntry(index, (e: EntryComposition) => {
-      e.dnd.enabled = !e.dnd.enabled;
-      e.state.editor = !e.state.editor;
-      return e;
-    });
-  };
-
-  const handleSaveClick = () => {
-    handleNetCoinChange({ ...detail.coin }, { ...tempDetail.coin });
-    updateEntry(index, (e: EntryComposition) => {
-      e.detail = { ...tempDetail };
-      e.dnd.enabled = !e.dnd.enabled;
-      e.state.editor = !e.state.editor;
-      e.state.isDefault = false;
-      return e;
-    });
-  };
-
   const handleCancelClick = () => {
     setTempDetail(detail);
     updateEntry(index, (e: EntryComposition) => {
-      e.state.editor = !e.state.editor;
+      e.dnd.enabled = true;
+      e.state.editor = false;
+      e.state.expanded = false;
       return e;
     });
   };
@@ -93,6 +51,28 @@ export const EntryExpanded = ({
     updateEntry(index, (e) => null);
   };
 
+  const renderOption = (
+    color: string,
+    event: () => void,
+    icon: JSX.Element
+  ) => {
+    return (
+      <IconButton
+        sx={{ scale: "1.2", ml: 4}}
+        color={color === "error" ? "error" : "silver"}
+        onClick={event}
+      >
+        {icon}
+      </IconButton>
+    );
+  };
+
+  const optionButtons = [
+    { color: "error", event: handleDeleteClick, icon: <Delete /> },
+    { color: "error", event: handleCancelClick, icon: <Cancel /> },
+    { color: "primary", event: handleSave, icon: <Save /> },
+  ];
+
   return (
     <CardContent>
       <div
@@ -104,68 +84,52 @@ export const EntryExpanded = ({
           flexWrap: "wrap",
         }}
       >
-        <div
-          style={{ display: "flex", flexDirection: "row", alignItems: "end" }}
-        >
-          <IconButton
-            sx={{ mr: 5, scale: "1.2" }}
-            color="error"
-            aria-label="delete"
-            onClick={state.editor ? handleCancelClick : handleDeleteClick}
-          >
-            {state.editor ? <Cancel /> : <Delete />}
-          </IconButton>
-          <IconButton
-            sx={{ scale: "1.2" }}
-            aria-label="edit"
-            onClick={state.editor ? handleSaveClick : handleEditClick}
-          >
-            {state.editor ? <Save /> : <Edit />}
-          </IconButton>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {optionButtons.map((p) => renderOption(p.color, p.event, p.icon))}
         </div>
+        <div style={{ margin: "auto" }} />
         <div
           style={{
-            margin: "0 auto 0 0",
             display: "flex",
+            flexWrap: "wrap",
+            flexDirection: "row",
+            alignItems: "end",
+            pointerEvents: state.editor ? "auto" : "none",
             opacity: state.editor ? 1 : 0,
             transitionProperty: "opacity",
             transitionDuration: ".5s",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          {state.editor ? (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  color="gold"
-                  variant={!viewItems ? "outlined" : "text"}
-                  onClick={() => setViewItems(false)}
-                  sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
-                >
-                  <Circle />
-                </Button>
-                <Button
-                  color="silver"
-                  variant={viewItems ? "outlined" : "text"}
-                  onClick={() => setViewItems(true)}
-                  sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
-                >
-                  <ViewInAr />
-                </Button>
-              </div>
-              {viewItems ? (
-                <ItemTracker  detail={tempDetail} setDetail={setTempDetail}/>
-              ) : (
-                <CoinIncrement detail={tempDetail} setDetail={setTempDetail} />
-              )}
-            </>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              color="gold"
+              variant={!viewItems ? "outlined" : "text"}
+              onClick={() => setViewItems(false)}
+              sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
+            >
+              <Circle />
+            </Button>
+            <Button
+              color="silver"
+              variant={viewItems ? "outlined" : "text"}
+              onClick={() => setViewItems(true)}
+              sx={{ mt: "4px", height: "2rem", borderRadius: "2rem" }}
+            >
+              <ViewInAr />
+            </Button>
+          </div>
+          {viewItems ? (
+            <ItemTracker detail={tempDetail} setDetail={setTempDetail} />
           ) : (
-            <div style={{ height: 72 }} />
+            <CoinIncrement detail={tempDetail} setDetail={setTempDetail} />
           )}
         </div>
       </div>

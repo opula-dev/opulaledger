@@ -18,11 +18,11 @@ const createItem = (title?: string) =>
     dnd: { type: "ledger", enabled: false },
     detail: {
       coin: DefaultCoinPurseState,
-      expanded: true,
       title: title ?? "",
       transaction: "sale",
+      items: [],
     },
-    state: { isDefault: true, editor: true },
+    state: { isDefault: true, editor: true, expanded: true },
   } as EntryComposition);
 
 const ledgerEntriesStorage = "opula-ledger-entries";

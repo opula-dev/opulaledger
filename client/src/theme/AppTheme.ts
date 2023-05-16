@@ -40,6 +40,14 @@ declare module "@mui/material/Button" {
   }
 }
 
+declare module "@mui/material/ButtonGroup" {
+  interface ButtonGroupPropsColorOverrides {
+    gold: true;
+    silver: true;
+    copper: true;
+  }
+}
+
 /* Main Theme */
 const AppTheme = createTheme({
   palette: {

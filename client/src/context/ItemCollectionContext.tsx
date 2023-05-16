@@ -1,9 +1,9 @@
 import { createContext, useState } from "react";
 import update from "immutability-helper";
 import { Preview } from "@mui/icons-material";
+import { v4 as uuidv4 } from "uuid";
 
 export interface ItemState {
-  source: string;
   id: string;
   name: string;
   amount: number;
@@ -11,15 +11,21 @@ export interface ItemState {
 
 export type ItemCollectionContextState = {
   items: readonly ItemState[];
+  itemOptions: readonly string[];
   upsertItem: (item: ItemState) => void;
   deleteItem: (item: ItemState) => void;
 };
 
 export const ItemCollectionContext = createContext<ItemCollectionContextState>({
   items: [],
+  itemOptions: [],
   upsertItem: (x) => {},
   deleteItem: (x) => {},
 });
+
+export const createItem = (name: string, amount: number) => {
+  return { id: uuidv4(), name, amount };
+};
 
 interface properties {
   children: JSX.Element;
@@ -27,6 +33,10 @@ interface properties {
 
 export const ItemCollectionHandler = ({ children }: properties) => {
   const [items, setItems] = useState<ItemState[]>([]);
+
+  const uniqueItemNames = items
+    .filter((item, index, arr) => arr.indexOf(item) === index)
+    .map((i) => i.name);
 
   const upsertItem = (item: ItemState) => {
     const index = items.findIndex((x) => x.id === item.id);
@@ -52,7 +62,9 @@ export const ItemCollectionHandler = ({ children }: properties) => {
   };
 
   return (
-    <ItemCollectionContext.Provider value={{ items, upsertItem, deleteItem }}>
+    <ItemCollectionContext.Provider
+      value={{ items, itemOptions: uniqueItemNames, upsertItem, deleteItem }}
+    >
       {children}
     </ItemCollectionContext.Provider>
   );

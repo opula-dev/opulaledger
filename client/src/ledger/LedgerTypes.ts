@@ -1,5 +1,6 @@
 import { DnDItemType } from "../component/DnDItem";
 import { CoinPurseState } from "../context/CoinPurseContext";
+import { ItemState } from "../context/ItemCollectionContext";
 
 export const TransactionTypes = [
   "purchase",
@@ -12,14 +13,15 @@ export type Transaction = (typeof TransactionTypes)[number];
 
 export interface EntryDetails {
   coin: CoinPurseState;
-  expanded: boolean;
   title: string;
   transaction: Transaction;
+  items: ItemState[];
 }
 
 export interface EntryState {
   isDefault: boolean;
   editor: boolean;
+  expanded: boolean;
 }
 
 export interface EntryComposition {

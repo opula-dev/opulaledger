@@ -101,7 +101,15 @@ export const CoinIncrement = ({ detail, setDetail }: properties) => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        marginLeft: "20px",
+        padding: "4px",
+      }}
+    >
       {renderIncrement("1", "c")}
       {renderIncrement("5", "c")}
       {renderIncrement("10", "c")}
