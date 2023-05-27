@@ -1,16 +1,10 @@
-import type { ReactNode } from "react";
-import { Stack } from "@mui/material";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 type properties = {
-  children?: ReactNode;
+    children?: JSX.Element;
 };
 
-export const DnDContainer = ({children}: properties) => {
-  return (
-    <DndProvider backend={HTML5Backend}>
-      {children}
-    </DndProvider> 
-  );
+export const DnDContainer = ({ children }: properties) => {
+    return <DndProvider backend={HTML5Backend}>{children}</DndProvider>;
 };
