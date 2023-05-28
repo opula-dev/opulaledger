@@ -1,6 +1,7 @@
 import { Card, CardContent, Collapse } from "@mui/material";
 import { useContext, useState } from "react";
-import { CoinPurseContext, CoinPurseState, CoinPurseStorage, MergeCoinState } from "../context/CoinPurseContext";
+import { CoinPurseContext, CoinPurseState, MergeCoinState } from "../context/CoinPurseContext";
+import { setSessionCoinpurse } from "../utility/sessionStorage";
 import { EntryExpanded } from "./EntryExpanded";
 import { EntryHeader } from "./EntryHeader";
 import { EntryComposition, EntryDetails, EntryState } from "./LedgerTypes";
@@ -21,7 +22,7 @@ export const LedgerEntry = ({ index, state, detail, updateEntry }: properties) =
         setCoin((prevCoin) => {
             const subtracted = MergeCoinState({ ...before, sign: before.sign === "+" ? "-" : "+" }, { ...prevCoin });
             const result = MergeCoinState({ ...after }, { ...subtracted });
-            window.sessionStorage.setItem(CoinPurseStorage, JSON.stringify(result));
+            setSessionCoinpurse(JSON.stringify(result));
             return result;
         });
     };

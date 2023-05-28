@@ -8,6 +8,7 @@ import { DnDContainer } from "../component/DnDContainer";
 import { DnDItem } from "../component/DnDItem";
 import { AppMenuContext } from "../context/AppMenuContext";
 import { DefaultCoinPurseState } from "../context/CoinPurseContext";
+import { sessionLedgerEntries, setSessionLedgerEntries } from "../utility/sessionStorage";
 import { FormatEntries, menuOptionToFormat } from "./FormatEntries";
 import { LedgerEntry } from "./LedgerEntry";
 import { EntryComposition } from "./LedgerTypes";
@@ -25,13 +26,11 @@ const createItem = (title?: string) =>
         state: { isDefault: true, editor: true, expanded: true },
     } as EntryComposition);
 
-const ledgerEntriesStorage = "opula-ledger-entries";
-
 const getInitialEntries = () => {
     let result: EntryComposition[];
     try {
-        const localEntries =
-            window.sessionStorage.getItem(ledgerEntriesStorage) ?? JSON.stringify([createItem("Starting Total")]);
+        const localEntries = sessionLedgerEntries() ?? JSON.stringify([createItem("Starting Total")]);
+
         result = JSON.parse(localEntries) as EntryComposition[];
     } catch {
         result = [createItem("Starting Total")];
@@ -90,7 +89,7 @@ const Ledger = () => {
     );
 
     useEffect(() => {
-        window.sessionStorage.setItem(ledgerEntriesStorage, JSON.stringify(entries));
+        setSessionLedgerEntries(JSON.stringify(entries));
     }, [entries]);
 
     return (

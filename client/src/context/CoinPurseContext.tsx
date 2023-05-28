@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { sessionCoinpurse } from "../utility/sessionStorage";
 
 export interface CoinPurseState {
     sign: "+" | "-";
@@ -43,12 +44,10 @@ export const MergeCoinState: (s: CoinPurseState, d: CoinPurseState) => CoinPurse
     };
 };
 
-export const CoinPurseStorage = "opula-ledger-coinpurse";
-
 const getCoinPurseDefault = () => {
     let result: CoinPurseState;
     try {
-        const localEntries = window.sessionStorage.getItem(CoinPurseStorage) ?? JSON.stringify(DefaultCoinPurseState);
+        const localEntries = sessionCoinpurse();
         result = JSON.parse(localEntries) as CoinPurseState;
     } catch {
         result = DefaultCoinPurseState;
