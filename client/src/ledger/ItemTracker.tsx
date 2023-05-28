@@ -55,6 +55,7 @@ export const ItemTracker = ({ detail, setDetail }: properties) => {
             <div
                 style={{
                     display: "flex",
+                    flexWrap: "wrap",
                     flexDirection: "row",
                     padding: "4px",
                     marginBottom: "4px",
@@ -102,11 +103,14 @@ export const ItemTracker = ({ detail, setDetail }: properties) => {
                 flexWrap: "wrap",
                 flexDirection: "column",
                 marginLeft: "20px",
+                marginRight: "auto",
+                padding: "0 10px",
+                alignItems: "flex-start",
             }}
         >
             {detail.items.map((i) => renderItemEditor(i))}
             <div>
-                <IconButton color="success" onClick={handleAddItem} sx={{ background: "#283329" }}>
+                <IconButton color="success" onClick={handleAddItem} style={{ background: "#283329" }}>
                     <Add />
                 </IconButton>
             </div>

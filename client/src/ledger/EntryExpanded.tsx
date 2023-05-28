@@ -64,21 +64,16 @@ export const EntryExpanded = ({
                 style={{
                     padding: "0rem 1rem .5rem 1rem",
                     display: "flex",
-                    flexDirection: "row-reverse",
-                    alignItems: "end",
+                    flexDirection: "row",
                     flexWrap: "wrap",
+                    alignItems: "end",
                 }}
             >
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                    {optionButtons.map((p) => renderOption(p.color, p.event, p.icon))}
-                </div>
-                <div style={{ margin: "auto" }} />
                 <div
                     style={{
                         display: "flex",
                         flexWrap: "wrap",
                         flexDirection: "column",
-                        alignItems: "end",
                         pointerEvents: state.editor ? "auto" : "none",
                         opacity: state.editor ? 1 : 0,
                         transitionProperty: "opacity",
@@ -89,6 +84,9 @@ export const EntryExpanded = ({
                 >
                     <CoinIncrement detail={tempDetail} setDetail={setTempDetail} />
                     <ItemTracker detail={tempDetail} setDetail={setTempDetail} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", marginLeft: "auto" }}>
+                    {optionButtons.map((p) => renderOption(p.color, p.event, p.icon))}
                 </div>
             </div>
         </CardContent>
