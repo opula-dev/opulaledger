@@ -76,7 +76,7 @@ export const ItemTracker = ({ detail, setDetail }: properties) => {
                     />
                 </div>
                 <div>
-                    <ButtonGroup size="small" color="silver" variant="outlined" sx={{ ml: "20px" }}>
+                    <ButtonGroup size="small" color="white" variant="outlined" sx={{ ml: "20px" }}>
                         <Button>-</Button>
                         <Button>{item.amount}</Button>
                         <Button>+</Button>

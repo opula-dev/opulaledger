@@ -7,12 +7,14 @@ declare module "@mui/material/styles" {
         gold?: Palette["primary"];
         silver?: Palette["primary"];
         copper?: Palette["primary"];
+        white?: Palette["primary"];
     }
 
     interface PaletteOptions {
         gold?: PaletteOptions["primary"];
         silver?: PaletteOptions["primary"];
         copper?: PaletteOptions["primary"];
+        white?: PaletteOptions["primary"];
     }
 }
 
@@ -21,6 +23,7 @@ declare module "@mui/material/SvgIcon" {
         gold: true;
         silver: true;
         copper: true;
+        white: true;
     }
 }
 
@@ -29,6 +32,7 @@ declare module "@mui/material/IconButton" {
         gold: true;
         silver: true;
         copper: true;
+        white: true;
     }
 }
 
@@ -37,6 +41,7 @@ declare module "@mui/material/Button" {
         gold: true;
         silver: true;
         copper: true;
+        white: true;
     }
 }
 
@@ -45,6 +50,7 @@ declare module "@mui/material/ButtonGroup" {
         gold: true;
         silver: true;
         copper: true;
+        white: true;
     }
 }
 
@@ -62,6 +68,10 @@ const AppTheme = createTheme({
         },
         copper: {
             main: "#cc6633",
+            contrastText: "#000",
+        },
+        white: {
+            main: "#fff",
             contrastText: "#000",
         },
     },

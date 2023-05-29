@@ -120,7 +120,6 @@ const Ledger = () => {
                 </div>
                 <div>
                     <IconButton
-                        color="primary"
                         aria-label="add entries to clipboard"
                         onClick={() =>
                             navigator.clipboard.writeText(FormatEntries(entries, menuOptionToFormat(menuState)))

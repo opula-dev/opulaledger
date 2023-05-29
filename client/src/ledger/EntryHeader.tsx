@@ -82,7 +82,6 @@ export const EntryHeader = ({
                 <ExpandRotator
                     expand={state.expanded}
                     onClick={toggleExpanded}
-                    color="silver"
                     sx={{ scale: "1.2" }}
                     aria-expanded={state.expanded}
                     aria-label="show more"

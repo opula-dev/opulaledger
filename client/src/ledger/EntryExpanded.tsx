@@ -46,7 +46,7 @@ export const EntryExpanded = ({
 
     const renderOption = (color: string, event: () => void, icon: JSX.Element) => {
         return (
-            <IconButton sx={{ scale: "1.2", ml: 4 }} color={color === "error" ? "error" : "silver"} onClick={event}>
+            <IconButton sx={{ scale: "1.2", ml: 4 }} color={color === "error" ? "error" : "white"} onClick={event}>
                 {icon}
             </IconButton>
         );
